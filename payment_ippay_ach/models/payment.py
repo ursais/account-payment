@@ -23,6 +23,31 @@ class PaymentAcquirer(models.Model):
     ippay_ach_terminal_id = fields.Char(
         "IPpay ACH TerminalID", required_if_provider="ippay_ach"
     )
+    ippay_ach_save_token = fields.Selection([
+        ('none', 'Never'),
+        ('ask', 'Let the customer decide'),
+        ('always', 'Always')],
+        string='Save Cards', default='none',
+        help="This option allows customers to save their credit card "
+             "as a payment token and to reuse it for a later purchase. "
+             "If you manage subscriptions (recurring invoicing), "
+             "you need it to automatically charge the customer when you "
+             "issue an invoice.")
+
+    def _get_feature_support(self):
+        """Get advanced feature support by provider.
+
+        Each provider should add its technical in the corresponding
+        key for the following features:
+            * fees: support payment fees computations
+            * authorize: support authorizing payment (separates
+                         authorization and capture)
+            * tokenize: support saving payment data in a payment.tokenize
+                        object
+        """
+        res = super()._get_feature_support()
+        res['tokenize'].append('ippay_ach')
+        return res
 
     @api.model
     def ippay_ach_s2s_form_process(self, data):
@@ -30,7 +55,13 @@ class PaymentAcquirer(models.Model):
         Token = self.env["payment.token"]
         token_id = data.get("selected_token_id")
         if not token_id:
+            save_token = (
+                self.ippay_ach_save_token == 'always' or
+                (self.ippay_ach_save_token == 'ask' and
+                 bool(data.get('save_token')))
+            )
             values = {
+                "save_token": save_token,
                 'bank_acc_number': data.get('bank_acc_number'),
                 'aba': data.get('aba'),
                 'ch_holder_name': data.get('ch_holder_name'),
@@ -72,6 +103,8 @@ class PaymentToken(models.Model):
     """Payment Token."""
 
     _inherit = "payment.token"
+
+    save_token = fields.Boolean()
 
     @api.model
     def _ippay_ach_get_token(self, values):
