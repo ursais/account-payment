@@ -20,6 +20,10 @@ class PaymentTansaction(models.Model):
 
     @api.multi
     def _ippay_ach_s2s_do_payment(self, invoice):
+        acquirer_ref = self.payment_token_id.acquirer_ref
+        if not (self.payment_token_id.save_token and
+                self.acquirer_id.ippay_ach_save_token):
+            self.payment_token_id.unlink()
         sequence = self.acquirer_id.journal_id.sequence_id
         check_number = sequence.next_by_id()
         if '/' in check_number:
@@ -38,7 +42,7 @@ class PaymentTansaction(models.Model):
             self.acquirer_id.ippay_ach_terminal_id,
             invoice.partner_id.name,
             str(self.amount).replace(".", ""),
-            self.payment_token_id.acquirer_ref,
+            acquirer_ref,
             check_number,
         )
 
