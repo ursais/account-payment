@@ -28,6 +28,7 @@ class PaymentTansaction(models.Model):
         check_number = sequence.next_by_id()
         if '/' in check_number:
             check_number = check_number.split('/')[-1]
+        amount = format(self.amount, ".2f").replace(".", "")
         request = """
             <ippay>
                 <TransactionType>CHECK</TransactionType>
@@ -41,7 +42,7 @@ class PaymentTansaction(models.Model):
             </ippay>""" % (
             self.acquirer_id.ippay_ach_terminal_id,
             invoice.partner_id.name,
-            str(self.amount).replace(".", ""),
+            amount,
             acquirer_ref,
             check_number,
         )
