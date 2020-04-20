@@ -77,8 +77,10 @@ class PaymentTansaction(models.Model):
             )
 
     @api.multi
-    def ippay_ach_s2s_do_transaction(self):
+    def ippay_ach_s2s_do_transaction(self, **kwargs):
         """Invoice payment using ippay ACH."""
+        # kwargs needed, some automated payments pass payment_secure args
+        # although these are not used for IPPay
         for transaction in self:
             inv_rec = self.invoice_ids
             for inv in inv_rec:
