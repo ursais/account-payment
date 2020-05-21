@@ -149,19 +149,20 @@ class PaymentToken(models.Model):
     @api.model
     def ippay_ach_create(self, values, token_code=None):
         """Create the Ippay ACH Token."""
-        token_code = token_code or self._ippay_ach_get_token(values)
-        existing = self.sudo().search([
-            ("acquirer_ref", "=", token_code),
-            ("partner_id", "=", values.get("partner_id")),
-            ("acquirer_id", "=", values.get("acquirer_id"))],
-            limit=1)
+        # Search if the card was already stored
+        # We use the last four digits for this
+        existing = self.sudo().search(
+            [("partner_id", "=", values.get("partner_id")),
+             ("acquirer_id", "=", values.get("acquirer_id"))]
+            ).filtered(lambda s: s.name[-4:] == values["cc_number"][:-4])
         if existing:
-            raise ValidationError(_(
-                "This payment method is already assigned to this Customer.")
+            raise ValidationError(
+                _("This payment method is already assigned to this Customer.")
             )
-        else:
-            return {
-                "name": "%s - %s"
-                % (values["bank_acc_number"], values["ch_holder_name"]),
-                "acquirer_ref": token_code,
-            }
+        # In case we already know the token assigned, just use it
+        token_code = token_code or self._ippay_ach_get_token(values)
+        return {
+            "name": "%s - %s"
+            % (values["bank_acc_number"], values["ch_holder_name"]),
+            "acquirer_ref": token_code,
+        }
