@@ -29,9 +29,11 @@ class PaymentTansaction(models.Model):
         if '/' in check_number:
             check_number = check_number.split('/')[-1]
         amount = format(self.amount, ".2f").replace(".", "")
+        transaction_type = invoice.type == "out_invoice" and "CHECK" \
+                           or "CREDIT"
         request = """
             <ippay>
-                <TransactionType>CHECK</TransactionType>
+                <TransactionType>%s</TransactionType>
                 <TerminalID>%s</TerminalID>
                 <CardName>%s</CardName>
                 <TotalAmount>%s</TotalAmount>
@@ -40,6 +42,7 @@ class PaymentTansaction(models.Model):
                     <CheckNumber>%s</CheckNumber>
                 </ACH>
             </ippay>""" % (
+            transaction_type,
             self.acquirer_id.ippay_ach_terminal_id,
             invoice.partner_id.name,
             amount,
@@ -84,5 +87,5 @@ class PaymentTansaction(models.Model):
         for transaction in self:
             inv_rec = self.invoice_ids
             for inv in inv_rec:
-                if inv.type == "out_invoice":
+                if inv.type in ["out_invoice", "out_refund"]:
                     self._ippay_ach_s2s_do_payment(invoice=inv)
