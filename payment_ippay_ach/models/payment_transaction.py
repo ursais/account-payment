@@ -21,17 +21,19 @@ class PaymentTansaction(models.Model):
     @api.multi
     def _ippay_ach_s2s_do_payment(self, invoice):
         acquirer_ref = self.payment_token_id.acquirer_ref
-        if not (self.payment_token_id.save_token and
-                self.acquirer_id.ippay_ach_save_token):
+        if not (
+            self.payment_token_id.save_token and self.acquirer_id.ippay_ach_save_token
+        ):
             self.payment_token_id.unlink()
         sequence = self.acquirer_id.journal_id.sequence_id
         check_number = sequence.next_by_id()
-        if '/' in check_number:
-            check_number = check_number.split('/')[-1]
+        if "/" in check_number:
+            check_number = check_number.split("/")[-1]
         amount = format(self.amount, ".2f").replace(".", "")
+        transaction_type = "CHECK" if invoice.type == "out_invoice" else "REVERSAL"
         request = """
             <ippay>
-                <TransactionType>CHECK</TransactionType>
+                <TransactionType>%s</TransactionType>
                 <TerminalID>%s</TerminalID>
                 <CardName>%s</CardName>
                 <TotalAmount>%s</TotalAmount>
@@ -40,6 +42,7 @@ class PaymentTansaction(models.Model):
                     <CheckNumber>%s</CheckNumber>
                 </ACH>
             </ippay>""" % (
+            transaction_type,
             self.acquirer_id.ippay_ach_terminal_id,
             invoice.partner_id.name,
             amount,
@@ -61,8 +64,9 @@ class PaymentTansaction(models.Model):
         content = xmltodict.parse(r.content)
         response = content.get("ippayResponse") or content.get("IPPayresponse")
         self.date = fields.Datetime.now()
-        if (response.get("ResponseText") == "CHECK ACCEPTED" and not
-                response.get("AdditionalInfo")):
+        if response.get("ResponseText") == "CHECK ACCEPTED" and not response.get(
+            "AdditionalInfo"
+        ):
             self.acquirer_reference = response.get("TransactionID")
             self.state = "done"
         else:
@@ -84,5 +88,5 @@ class PaymentTansaction(models.Model):
         for transaction in self:
             inv_rec = self.invoice_ids
             for inv in inv_rec:
-                if inv.type == "out_invoice":
+                if inv.type in ["out_invoice", "out_refund"]:
                     self._ippay_ach_s2s_do_payment(invoice=inv)
