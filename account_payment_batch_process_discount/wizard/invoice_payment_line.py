@@ -20,8 +20,8 @@ class InvoicePaymentLine(models.TransientModel):
             # Change handling difference
             self.payment_difference_handling = "open"
 
-    @api.onchange("paying_amt")
-    def onchange_paying_amt(self):
+    @api.onchange("amount")
+    def onchange_amount(self):
         rec = self
 
         # is discount applicable
@@ -34,15 +34,15 @@ class InvoicePaymentLine(models.TransientModel):
         discount_amount = discount_information[0]
         discount_account_id = discount_information[1]
         if discount_information[2]:
-            payment_amount = discount_information[2] - discount_amount
+            amount = discount_information[2] - discount_amount
         else:
-            payment_amount = rec.invoice_id.amount_residual
+            amount = rec.invoice_id.amount_residual
         # if paying_amt change is triggered by date change
         if self._context.get("reset_autofill", False):
-            rec.paying_amt = payment_amount
+            rec.amount = amount
 
         # compute difference
-        due_or_balance = rec.balance_amt - rec.paying_amt
+        due_or_balance = rec.balance - rec.amount
 
         # apply discount
         if due_or_balance <= discount_amount:
