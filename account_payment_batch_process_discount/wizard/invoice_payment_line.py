@@ -58,7 +58,7 @@ class InvoicePaymentLine(models.TransientModel):
 
         # cannot apply discount
         else:
-            rec.payment_differnce = due_or_balance
+            rec.payment_difference = due_or_balance
             rec.payment_difference_handling = "open"
             rec.writeoff_account_id = False
             rec.note = False
