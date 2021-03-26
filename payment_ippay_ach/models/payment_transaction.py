@@ -64,9 +64,7 @@ class PaymentTansaction(models.Model):
         content = xmltodict.parse(r.content)
         response = content.get("ippayResponse") or content.get("IPPayresponse")
         self.date = fields.Datetime.now()
-        if response.get("ResponseText") == "CHECK ACCEPTED" and not response.get(
-            "AdditionalInfo"
-        ):
+        if response.get("ActionCode") == "000":
             self.acquirer_reference = response.get("TransactionID")
             self.state = "done"
         else:
