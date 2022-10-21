@@ -339,8 +339,8 @@ class ResPartnerAgingSupplier(models.Model):
                        aml.date as inv_date_due
                 from account_move_line aml
                 where aml.date <= '%s'
-                and aml.full_reconcile_id IS NOT NULL
-                and aml.account_id in (select id from account_account_type
+                and aml.full_reconcile_id IS NULL
+                and aml.user_type_id in (select id from account_account_type
                 where type = 'payable')
                 and aml.debit > 0
               """ % (
