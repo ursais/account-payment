@@ -40,7 +40,6 @@ class ResPartnerAgingSupplier(models.Model):
                 aml.date as date_due, 
                 ai.name as invoice_ref,
                 days_due AS avg_days_overdue,
-                ai.analytic_account_id as analytic_account_id,
                 CASE WHEN (days_due BETWEEN 1 and 30) THEN
                     CASE WHEN (aml.full_reconcile_id is NULL and
                         aml.amount_residual>0) THEN -(aml.debit-(select
