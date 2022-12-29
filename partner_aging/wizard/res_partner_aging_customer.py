@@ -45,47 +45,47 @@ class ResPartnerAgingCustomer(models.Model):
                         aml.amount_residual<0) THEN -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                         WHEN (aml.full_reconcile_id is NULL and
                         aml.amount_residual=0) THEN
                             CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                             -(aml.credit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                             WHEN aml.debit > 0 and aml.credit = 0 THEN
                             aml.debit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                             END                    					
                         WHEN (aml.full_reconcile_id is NULL and
                         aml.amount_residual>0) THEN aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         WHEN (aml.full_reconcile_id is NOT NULL) THEN
                         CASE WHEN ai.move_type = 'out_invoice' THEN
                         aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         WHEN ai.move_type = 'out_refund' THEN
                         -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                         WHEN ai.move_type = 'entry' THEN
                             CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                             -(aml.credit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                             WHEN aml.debit > 0 and aml.credit = 0 THEN
                             aml.debit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                             END                    
                         END
                     END ELSE 0 END AS days_due_01to30,
@@ -94,47 +94,47 @@ class ResPartnerAgingCustomer(models.Model):
                         aml.amount_residual<0) THEN -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                         WHEN (aml.full_reconcile_id is NULL and
                         aml.amount_residual=0) THEN
                             CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                             -(aml.credit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                             WHEN aml.debit > 0 and aml.credit = 0 THEN
                             aml.debit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                             END                    					
                         WHEN (aml.full_reconcile_id is NULL and
                         aml.amount_residual>0) THEN aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         WHEN (aml.full_reconcile_id is NOT NULL) THEN
                         CASE WHEN ai.move_type = 'out_invoice' THEN
                         aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         WHEN ai.move_type = 'out_refund' THEN
                         -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                         WHEN ai.move_type = 'entry' THEN
                             CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                             -(aml.credit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                             WHEN aml.debit > 0 and aml.credit = 0 THEN
                             aml.debit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                             END                    
                         END
                     END ELSE 0 END AS days_due_31to60,
@@ -143,47 +143,47 @@ class ResPartnerAgingCustomer(models.Model):
                         aml.amount_residual<0) THEN -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                         WHEN (aml.full_reconcile_id is NULL and
                         aml.amount_residual=0) THEN
                             CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                             -(aml.credit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                             WHEN aml.debit > 0 and aml.credit = 0 THEN
                             aml.debit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                             END                    					
                         WHEN (aml.full_reconcile_id is NULL and
                         aml.amount_residual>0) THEN aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         WHEN (aml.full_reconcile_id is NOT NULL) THEN
                         CASE WHEN ai.move_type = 'out_invoice' THEN
                         aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         WHEN ai.move_type = 'out_refund' THEN
                         -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                         WHEN ai.move_type = 'entry' THEN
                             CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                             -(aml.credit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                             WHEN aml.debit > 0 and aml.credit = 0 THEN
                             aml.debit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                             END                    
                         END
                     END ELSE 0 END AS days_due_61to90,
@@ -192,47 +192,47 @@ class ResPartnerAgingCustomer(models.Model):
                         aml.amount_residual<0) THEN -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                         WHEN (aml.full_reconcile_id is NULL and
                         aml.amount_residual=0) THEN
                             CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                             -(aml.credit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                             WHEN aml.debit > 0 and aml.credit = 0 THEN
                             aml.debit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                             END                    					
                         WHEN (aml.full_reconcile_id is NULL and
                         aml.amount_residual>0) THEN aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         WHEN (aml.full_reconcile_id is NOT NULL) THEN
                         CASE WHEN ai.move_type = 'out_invoice' THEN
                         aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         WHEN ai.move_type = 'out_refund' THEN
                         -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                         WHEN ai.move_type = 'entry' THEN
                             CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                             -(aml.credit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                             WHEN aml.debit > 0 and aml.credit = 0 THEN
                             aml.debit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                             END                    
                         END
                     END ELSE 0 END AS days_due_91to120,
@@ -241,47 +241,47 @@ class ResPartnerAgingCustomer(models.Model):
                         aml.amount_residual<0) THEN -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                         WHEN (aml.full_reconcile_id is NULL and
                         aml.amount_residual=0) THEN
                             CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                             -(aml.credit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                             WHEN aml.debit > 0 and aml.credit = 0 THEN
                             aml.debit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                             END                    					
                         WHEN (aml.full_reconcile_id is NULL and
                         aml.amount_residual>0) THEN aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         WHEN (aml.full_reconcile_id is NOT NULL) THEN
                         CASE WHEN ai.move_type = 'out_invoice' THEN
                         aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         WHEN ai.move_type = 'out_refund' THEN
                         -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                         WHEN ai.move_type = 'entry' THEN
                             CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                             -(aml.credit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                             WHEN aml.debit > 0 and aml.credit = 0 THEN
                             aml.debit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                             END                    
                         END
                     END ELSE 0 END AS days_due_121togr,
@@ -292,47 +292,47 @@ class ResPartnerAgingCustomer(models.Model):
                         aml.amount_residual<0) THEN -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                         WHEN (aml.full_reconcile_id is NULL and
                         aml.amount_residual=0) THEN
                             CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                             -(aml.credit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                             WHEN aml.debit > 0 and aml.credit = 0 THEN
                             aml.debit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                             END                    					
                         WHEN (aml.full_reconcile_id is NULL and
                         aml.amount_residual>0) THEN aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         WHEN (aml.full_reconcile_id is NOT NULL) THEN
                         CASE WHEN ai.move_type = 'out_invoice' THEN
                         aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         WHEN ai.move_type = 'out_refund' THEN
                         -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                         WHEN ai.move_type = 'entry' THEN
                             CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                             -(aml.credit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                             WHEN aml.debit > 0 and aml.credit = 0 THEN
                             aml.debit-(select
                             coalesce(sum(apr.amount),0) from account_partial_reconcile
                             apr where (apr.credit_move_id =aml.id or
-                            apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                            apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                             END                    
                         END
                     END ELSE 0 END AS not_due,
@@ -340,47 +340,47 @@ class ResPartnerAgingCustomer(models.Model):
                     aml.amount_residual<0) THEN -(aml.credit-(select
                     coalesce(sum(apr.amount),0) from account_partial_reconcile
                     apr where (apr.credit_move_id =aml.id or
-                    apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                    apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                     WHEN (aml.full_reconcile_id is NULL and
                     aml.amount_residual=0) THEN
                         CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                         -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                         WHEN aml.debit > 0 and aml.credit = 0 THEN
                         aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         END                    					
                     WHEN (aml.full_reconcile_id is NULL and
                     aml.amount_residual>0) THEN aml.debit-(select
                     coalesce(sum(apr.amount),0) from account_partial_reconcile
                     apr where (apr.credit_move_id =aml.id or
-                    apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                    apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                     WHEN (aml.full_reconcile_id is NOT NULL) THEN
                     CASE WHEN ai.move_type = 'out_invoice' THEN
                     aml.debit-(select
                     coalesce(sum(apr.amount),0) from account_partial_reconcile
                     apr where (apr.credit_move_id =aml.id or
-                    apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                    apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                     WHEN ai.move_type = 'out_refund' THEN
                     -(aml.credit-(select
                     coalesce(sum(apr.amount),0) from account_partial_reconcile
                     apr where (apr.credit_move_id =aml.id or
-                    apr.debit_move_id=aml.id) and apr.create_date <= '{}'))
+                    apr.debit_move_id=aml.id) and apr.max_date <= '{}'))
                     WHEN ai.move_type = 'entry' THEN
                         CASE WHEN aml.credit > 0 and aml.debit = 0 THEN 
                         -(aml.credit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}'))					
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}'))					
                         WHEN aml.debit > 0 and aml.credit = 0 THEN
                         aml.debit-(select
                         coalesce(sum(apr.amount),0) from account_partial_reconcile
                         apr where (apr.credit_move_id =aml.id or
-                        apr.debit_move_id=aml.id) and apr.create_date <= '{}')
+                        apr.debit_move_id=aml.id) and apr.max_date <= '{}')
                         END                    
                     END
                     END AS total,
