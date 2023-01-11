@@ -32,6 +32,7 @@ class ResPartnerAgingSupplier(models.Model):
             age_date = fields.Date.context_today(self)
 
         query = """
+                select * from (
                 SELECT 
                 aml.id,
                 aml.partner_id as partner_id,
@@ -410,7 +411,8 @@ class ResPartnerAgingSupplier(models.Model):
                     AND ai.move_type in ('in_invoice','in_refund', 'entry')
                     AND aml.partner_id IS NOT NULL
                 GROUP BY 
-                    aml.partner_id, aml.id, ai.name, days_due, ai.invoice_user_id, ai.id                     
+                    aml.partner_id, aml.id, ai.name, days_due, ai.invoice_user_id, ai.id
+                ) as foo where round(foo.total, 2) != 0                    
               """.format(
             age_date,
             age_date,
